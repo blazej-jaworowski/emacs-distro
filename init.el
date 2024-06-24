@@ -76,13 +76,11 @@
 (define-key minimal-map (kbd "<mouse-5>") 'mwheel-scroll)
 (define-key minimal-map (kbd "<mouse-7>") 'mwheel-scroll)
 (define-key minimal-map (kbd "<mouse-1>") 'mouse-set-point)
+(define-key minimal-map (kbd "<escape>") 'ignore)
 (define-key minimal-map (kbd "C-?") 'describe-bindings)
 (use-global-map minimal-map)
 
-(setq function-key-map (make-sparse-keymap))
-(setq key-translation-map (make-sparse-keymap))
-(setq input-decode-map (make-sparse-keymap))
-;; (setq minibuffer-local-map (make-sparse-keymap))
+(setq y-or-n-p-map (make-keymap)) ;; ???
 
 ;; Setup
 
@@ -95,81 +93,81 @@
     (setq evil-insert-state-map character-map)
     (setq evil-visual-state-map (make-sparse-keymap))
     (evil-define-key 'motion 'global
-        "j" 'evil-backward-char
-        "k" 'evil-next-line
-        "K" '(lambda () (interactive) (evil-next-line 10))
-        "l" 'evil-previous-line
-        "L" '(lambda () (interactive) (evil-previous-line 10))
-        ";" 'evil-forward-char
-        ":" 'evil-ex
-        "gg" 'evil-goto-first-line
-        "G" 'evil-goto-line
-        "^" 'evil-first-non-blank
-        "$" 'evil-end-of-line
-        "b" 'evil-backward-word-begin
-        "e" 'evil-forward-word-end
-        "w" 'evil-forward-word-begin
-        "0" 'evil-beginning-of-line
-        "/" 'evil-search-forward
-        "?" 'evil-search-backward
-        "n" 'evil-search-next
-        "N" 'evil-search-previous
-        "V" 'evil-visual-line
-        "\C-v" 'evil-visual-block
-        "v" 'evil-visual-char
-        "[[" 'evil-backward-paragraph
-        "]]" 'evil-forward-paragraph
-        "(" 'evil-previous-open-paren
-        ")" 'evil-next-open-paren
-        "{" 'evil-previous-open-brace
-        "}" 'evil-next-open-brace
-        [down-mouse-1] 'evil-mouse-drag-region
-        "\C-o" 'evil-jump-forward
-        "\C-i" 'evil-jump-backward
-        " j" 'evil-window-left
-        " k" 'evil-window-down
-        " l" 'evil-window-up
-        " ;" 'evil-window-right
-        " v" 'evil-window-vsplit
-        " c" 'evil-window-split
-        " q" 'evil-quit
-        " =" 'balance-windows
-        "y" 'evil-yank
-        "q" 'evil-record-macro
-        "@" 'evil-execute-macro
-        "1" 'digit-arg
-        "2" 'digit-argument
-        "3" 'digit-argument
-        "4" 'digit-argument
-        "5" 'digit-argument
-        "6" 'digit-argument
-        "7" 'digit-argument
-        "8" 'digit-argument
-        "9" 'digit-argument
+        (kbd "j") 'evil-backward-char
+        (kbd "k") 'evil-next-line
+        (kbd "K") '(lambda () (interactive) (evil-next-line 10))
+        (kbd "l") 'evil-previous-line
+        (kbd "L") '(lambda () (interactive) (evil-previous-line 10))
+        (kbd ";") 'evil-forward-char
+        (kbd ":") 'evil-ex
+        (kbd "g g") 'evil-goto-first-line
+        (kbd "G") 'evil-goto-line
+        (kbd "^") 'evil-first-non-blank
+        (kbd "$") 'evil-end-of-line
+        (kbd "b") 'evil-backward-word-begin
+        (kbd "e") 'evil-forward-word-end
+        (kbd "w") 'evil-forward-word-begin
+        (kbd "0") 'evil-beginning-of-line
+        (kbd "/") 'evil-search-forward
+        (kbd "?") 'evil-search-backward
+        (kbd "n") 'evil-search-next
+        (kbd "N") 'evil-search-previous
+        (kbd "V") 'evil-visual-line
+        (kbd "C-v") 'evil-visual-block
+        (kbd "v") 'evil-visual-char
+        (kbd "[ [") 'evil-backward-paragraph
+        (kbd "] ]") 'evil-forward-paragraph
+        (kbd "(") 'evil-previous-open-paren
+        (kbd ")") 'evil-next-open-paren
+        (kbd "{") 'evil-previous-open-brace
+        (kbd "}") 'evil-next-open-brace
+        (kbd "<down-mouse-1>") 'evil-mouse-drag-region
+        (kbd "C-o") 'evil-jump-forward
+        (kbd "C-i") 'evil-jump-backward
+        (kbd "SPC j") 'evil-window-left
+        (kbd "SPC k") 'evil-window-down
+        (kbd "SPC l") 'evil-window-up
+        (kbd "SPC ;") 'evil-window-right
+        (kbd "SPC v") 'evil-window-vsplit
+        (kbd "SPC c") 'evil-window-split
+        (kbd "SPC q") 'evil-quit
+        (kbd "SPC =") 'balance-windows
+        (kbd "y") 'evil-yank
+        (kbd "q") 'evil-record-macro
+        (kbd "@") 'evil-execute-macro
+        (kbd "1") 'digit-argument
+        (kbd "2") 'digit-argument
+        (kbd "3") 'digit-argument
+        (kbd "4") 'digit-argument
+        (kbd "5") 'digit-argument
+        (kbd "6") 'digit-argument
+        (kbd "7") 'digit-argument
+        (kbd "8") 'digit-argument
+        (kbd "9") 'digit-argument
     )
     (evil-define-key 'normal 'global
-        "<" 'evil-shift-left
-        ">" 'evil-shift-right
-        "a" 'evil-append
-        "A" 'evil-append-line
-        "i" 'evil-insert
-        "I" 'evil-insert-line
-        "o" 'evil-open-below
-        "O" 'evil-open-above
-        "p" 'evil-paste-after
-        "P" 'evil-paste-before
-        "d" 'evil-delete
-        "x" 'evil-delete-char
-        "r" 'evil-replace
-        "s" 'evil-substitute
-        "u" 'evil-undo
-        "U" 'evil-redo
+        (kbd "<") 'evil-shift-left
+        (kbd ">") 'evil-shift-right
+        (kbd "a") 'evil-append
+        (kbd "A") 'evil-append-line
+        (kbd "i") 'evil-insert
+        (kbd "I") 'evil-insert-line
+        (kbd "o") 'evil-open-below
+        (kbd "O") 'evil-open-above
+        (kbd "p") 'evil-paste-after
+        (kbd "P") 'evil-paste-before
+        (kbd "d") 'evil-delete
+        (kbd "x") 'evil-delete-char
+        (kbd "r") 'evil-replace
+        (kbd "s") 'evil-substitute
+        (kbd "u") 'evil-undo
+        (kbd "U") 'evil-redo
     )
     (evil-define-key 'visual 'global
-        "\e" 'evil-exit-visual-state
+        (kbd "<escape>") 'evil-exit-visual-state
     )
     (evil-define-key 'insert 'global
-        "\e" 'evil-normal-state
+        (kbd "<escape>") 'evil-normal-state
     )
 )
 
@@ -179,19 +177,19 @@
     (vertico-mode)
     (setq vertico-map (make-keymap))
     (evil-define-key 'motion vertico-map
-        "k" 'vertico-next
-        "K" '(lambda () (interactive) (vertico-next 10))
-        "l" 'vertico-previous
-        "L" '(lambda () (interactive) (vertico-previous 10))
-        "gg" 'vertico-first
-        "G" 'vertico-last
-        "\e" 'keyboard-escape-quit
-        "f" 'vertico-quick-jump
+        (kbd "k") 'vertico-next
+        (kbd "K") '(lambda () (interactive) (vertico-next 10))
+        (kbd "l") 'vertico-previous
+        (kbd "L") '(lambda () (interactive) (vertico-previous 10))
+        (kbd "g g") 'vertico-first
+        (kbd "G") 'vertico-last
+        (kbd "<escape>") 'keyboard-escape-quit
+        (kbd "f") 'vertico-quick-jump
     )
     (evil-define-key '(motion insert) vertico-map
         (kbd "<down>") 'vertico-next
         (kbd "<up>") 'vertico-previous
-        "\t" 'vertico-insert
+        (kbd "TAB") 'vertico-insert
         (kbd "RET") 'vertico-exit
     )
 )
@@ -206,20 +204,22 @@
 (use-package consult
     :config
     (evil-define-key 'motion 'global
-        " ff" 'consult-find
-        " fg" 'consult-ripgrep
+        (kbd "SPC f f") 'consult-find
+        (kbd "SPC f g") 'consult-ripgrep
     )
+    :custom
+    (consult-async-refresh-delay 0.0)
+    (consult-async-input-throttle 0.0)
+    (consult-async-input-debounce 0.0)
+    (consult-async-min-input 1)
 )
 
 (use-package avy
     :config
     (evil-define-key 'motion 'global
-        "f" 'avy-goto-char-2
+        (kbd "f") 'avy-goto-char-2
     )
 )
 
 (use-package amx)
-
-(setq function-key-map (make-sparse-keymap))
-(setq key-translation-map (make-sparse-keymap))
-(setq input-decode-map (make-sparse-keymap))
+(use-package vterm)
