@@ -25,6 +25,13 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+(setq package-check-signature nil)
+(use-package gnu-elpa-keyring-update
+    :config
+    (gnu-elpa-keyring-update)
+)
+(setq package-check-signature 'allow-unsigned)
+
 ;; Visual setup
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -171,6 +178,8 @@
     )
 )
 
+(add-hook 'minibuffer-setup-hook '(lambda () (interactive) (evil-insert-state)))
+
 (use-package vertico
     :config
     (setq vertico-count 20)
@@ -222,4 +231,3 @@
 )
 
 (use-package amx)
-(use-package vterm)
