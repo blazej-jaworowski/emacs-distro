@@ -50,6 +50,8 @@
 (setq visible-bell t)
 (setq enable-recursive-minibuffers t)
 
+(setq confirm-kill-processes nil)
+
 (use-package gruvbox-theme
     :config
     (load-theme 'gruvbox-dark-hard)
@@ -87,7 +89,8 @@
 (define-key minimal-map (kbd "C-?") 'describe-bindings)
 (use-global-map minimal-map)
 
-(setq y-or-n-p-map (make-keymap)) ;; ???
+(setq y-or-n-p-map (make-keymap))
+(setq lisp-interaction-mode-map (make-keymap))
 
 ;; Setup
 
@@ -176,6 +179,9 @@
     (evil-define-key 'insert 'global
         (kbd "<escape>") 'evil-normal-state
     )
+    (evil-define-key '(motion insert) 'global
+        (kbd "C-j") 'shell
+    )
 )
 
 (add-hook 'minibuffer-setup-hook '(lambda () (interactive) (evil-insert-state)))
@@ -228,6 +234,53 @@
     (evil-define-key 'motion 'global
         (kbd "f") 'avy-goto-char-2
     )
+)
+
+(setq shell-mode-map (make-sparse-keymap))
+(evil-define-key 'insert shell-mode-map
+    (kbd "<RET>") 'comint-send-input
+    (kbd "<down>") 'comint-next-input
+    (kbd "<up>") 'comint-previous-input
+)
+(evil-define-key 'normal shell-mode-map
+    (kbd "<RET>") '(lambda ()
+        (interactive)
+        (if (eq (+ (marker-position (point-marker)) 1) (point-max))
+            (comint-send-input)
+            (let ((text (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+                (goto-char (point-max))
+                (insert text)
+            )
+        )
+    )
+)
+(evil-define-key 'visual shell-mode-map
+    (kbd "<RET>") '(lambda ()
+        (interactive)
+        (let ((text (buffer-substring-no-properties evil-visual-beginning evil-visual-end)))
+            (goto-char (point-max))
+            (insert text)
+        )
+    )
+)
+(defun goto-end ()
+    (goto-char (point-max))
+)
+(add-hook 'shell-mode-hook '(lambda ()
+    (add-hook 'evil-insert-state-entry-hook 'goto-end nil t)
+))
+(add-hook 'change-major-mode-hook '(lambda ()
+    (remove-hook 'evil-insert-state-entry-hook 'goto-end t)
+))
+(setq comint-prompt-read-only t)
+(setq comint-mode-map (make-keymap))
+(evil-define-key 'insert shell-mode-map
+    (kbd "C-u") 'comint-kill-input
+    (kbd "C-w") 'backward-kill-word
+    (kbd "C-c") 'comint-interrupt-subjob
+    (kbd "C-d") 'comint-send-eof
+    (kbd "C-z") 'comint-stop-subjob
+    (kbd "C-\\") 'comint-quit-subjob
 )
 
 (use-package amx)
