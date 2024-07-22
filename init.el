@@ -171,7 +171,7 @@
         (kbd "r") 'evil-replace
         (kbd "s") 'evil-substitute
         (kbd "u") 'evil-undo
-        (kbd "U") 'evil-redo
+        (kbd "C-u") 'evil-redo
     )
     (evil-define-key 'visual 'global
         (kbd "<escape>") 'evil-exit-visual-state
@@ -284,3 +284,41 @@
 )
 
 (use-package amx)
+
+(use-package eglot
+    :hook (
+        (python-mode . eglot-ensure)
+        (rust-mode . eglot-ensure)
+        (c-mode . eglot-ensure)
+        (c++-mode . eglot-ensure)
+        (elisp-mode . eglot-ensure)
+    )
+    :config
+    (setq eglot-autoshutdown t)
+    (setq eglot-confirm-server-initiated-edits nil)
+    (evil-define-key 'normal eglot-mode-map
+        (kbd "g d") 'xref-find-definitions
+        (kbd "g D") 'eglot-find-declaration
+        (kbd "g i") 'eglot-find-implementation
+        (kbd "g t") 'eglot-find-typeDefinition
+        (kbd "g r") 'xref-find-references
+
+        (kbd "SPC r n") 'eglot-rename
+        (kbd "SPC c a") 'eglot-code-actions
+        (kbd "SPC f t") 'eglot-format
+        (kbd "SPC f T") 'eglot-format-buffer
+
+        (kbd "C-k") 'eldoc
+        (kbd "C-l") 'eglot-help-at-point
+    )
+)
+
+(use-package company
+    :hook (after-init . global-company-mode)
+    :config
+    (setq
+        company-idle-delay 0.0
+        company-minimum-prefix-length 1
+        company-selection-wrap-around t
+    )
+)
