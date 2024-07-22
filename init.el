@@ -94,6 +94,16 @@
 
 ;; Setup
 
+
+(use-package undo-tree
+    :init
+    (setq undo-tree-map (make-sparse-keymap))
+    :config
+    (setq evil-undo-system 'undo-tree)
+    (global-undo-tree-mode)
+    (setq undo-tree-auto-save-history t)
+)
+
 (use-package evil
     :config
     (evil-mode 1)
@@ -140,7 +150,7 @@
         (kbd "SPC ;") 'evil-window-right
         (kbd "SPC v") 'evil-window-vsplit
         (kbd "SPC c") 'evil-window-split
-        (kbd "SPC q") 'evil-quit
+        (kbd "SPC x") 'evil-quit
         (kbd "SPC =") 'balance-windows
         (kbd "y") 'evil-yank
         (kbd "q") 'evil-record-macro
@@ -238,12 +248,12 @@
 
 (setq shell-mode-map (make-sparse-keymap))
 (evil-define-key 'insert shell-mode-map
-    (kbd "<RET>") 'comint-send-input
+    (kbd "RET") 'comint-send-input
     (kbd "<down>") 'comint-next-input
     (kbd "<up>") 'comint-previous-input
 )
 (evil-define-key 'normal shell-mode-map
-    (kbd "<RET>") '(lambda ()
+    (kbd "RET") '(lambda ()
         (interactive)
         (if (eq (+ (marker-position (point-marker)) 1) (point-max))
             (comint-send-input)
@@ -255,7 +265,7 @@
     )
 )
 (evil-define-key 'visual shell-mode-map
-    (kbd "<RET>") '(lambda ()
+    (kbd "RET") '(lambda ()
         (interactive)
         (let ((text (buffer-substring-no-properties evil-visual-beginning evil-visual-end)))
             (goto-char (point-max))
