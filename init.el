@@ -42,7 +42,7 @@
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(set-face-attribute 'default nil :font "Hack Nerd Font Mono" :height 130)
+(set-face-attribute 'default nil :font "Hack Nerd Font Mono" :height 110)
 
 (setq inhibit-startup-message t)
 
@@ -171,6 +171,7 @@
         (kbd "7") 'digit-argument
         (kbd "8") 'digit-argument
         (kbd "9") 'digit-argument
+        (kbd "SPC /") 'comment-line
     )
     (evil-define-key 'normal 'global
         (kbd "<") 'evil-shift-left
@@ -352,3 +353,8 @@
     (vlf-application 'dont-ask)
 )
 (setq large-file-warning-threshold nil)
+
+(use-package whitespace-cleanup-mode
+    :custom
+    (global-whitespace-cleanup-mode)
+)
