@@ -3,6 +3,12 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
+(setq backup-directory-alist `(("." . "~/.saves")))
+(setq delete-old-versions t
+  kept-new-versions 6
+  kept-old-versions 2
+  version-control t)
+
 ;; Set up package repos
 
 (require 'package)
@@ -95,7 +101,6 @@
 (electric-pair-mode)
 
 ;; Setup
-
 
 (use-package undo-tree
     :init
@@ -341,3 +346,9 @@
         company-selection-wrap-around t
     )
 )
+
+(use-package vlf
+    :custom
+    (vlf-application 'dont-ask)
+)
+(setq large-file-warning-threshold nil)
