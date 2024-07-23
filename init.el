@@ -233,6 +233,7 @@
     (evil-define-key 'motion 'global
         (kbd "SPC f f") 'consult-find
         (kbd "SPC f g") 'consult-ripgrep
+        (kbd "SPC f b") 'consult-buffer
     )
     :custom
     (consult-async-refresh-delay 0.0)
@@ -297,33 +298,39 @@
 
 (use-package amx)
 
-(use-package eglot
+(use-package lsp-mode
     :hook (
-        (python-mode . eglot-ensure)
-        (rust-mode . eglot-ensure)
-        (c-mode . eglot-ensure)
-        (c++-mode . eglot-ensure)
-        (elisp-mode . eglot-ensure)
+        (python-mode . lsp)
+        (rust-mode . lsp)
+        (c-mode . lsp)
+        (c++-mode . lsp)
+        (elisp-mode . lsp)
     )
+    :custom
+    (eldoc-idle-delay 0.0)
     :config
-    (setq eglot-autoshutdown t)
-    (setq eglot-confirm-server-initiated-edits nil)
-    (evil-define-key 'normal eglot-mode-map
-        (kbd "g d") 'xref-find-definitions
-        (kbd "g D") 'eglot-find-declaration
-        (kbd "g i") 'eglot-find-implementation
-        (kbd "g t") 'eglot-find-typeDefinition
-        (kbd "g r") 'xref-find-references
+    (setq lsp-command-map (make-sparse-keymap))
+    (evil-define-key 'normal 'lsp-command-map
+        (kbd "g d") 'lsp-find-definition
+        (kbd "g r") 'lsp-find-references
 
-        (kbd "SPC r n") 'eglot-rename
-        (kbd "SPC c a") 'eglot-code-actions
-        (kbd "SPC f t") 'eglot-format
-        (kbd "SPC f T") 'eglot-format-buffer
+        (kbd "SPC d r") 'lsp-rename
+        (kbd "SPC d a") 'lsp-execute-code-action
+        (kbd "SPC d f") 'lsp-format-region
+        (kbd "SPC d F") 'lsp-format-buffer
 
-        (kbd "C-k") 'eldoc
-        (kbd "C-l") 'eglot-help-at-point
+        (kbd "SPC q") 'consult-lsp-diagnostics
+        (kbd "SPC Q") 'flymake-show-project-diagnostics
     )
+    (setq gc-cons-threshold 100000000)
+    (setq read-process-output-max (* 1024 1024))
+    (setq lsp-idle-delay 0.1)
+    (setq lsp-use-plists t)
+    (setq lsp-modeline-diagnostics-enable nil)
+    (setq xref-show-xrefs-function 'consult-xref)
+    (setq xref-show-definitions-function 'consult-xref)
 )
+(use-package consult-lsp)
 
 (use-package company
     :hook (after-init . global-company-mode)
