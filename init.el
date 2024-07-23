@@ -92,6 +92,8 @@
 (setq y-or-n-p-map (make-keymap))
 (setq lisp-interaction-mode-map (make-keymap))
 
+(electric-pair-mode)
+
 ;; Setup
 
 
